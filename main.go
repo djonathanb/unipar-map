@@ -18,7 +18,17 @@ func environmentsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(data))
 }
 
+func routeHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func routeUtilitiesHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func main() {
 	http.HandleFunc("/environments", environmentsHandler)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	http.HandleFunc("/route", routeHandler)
+	http.HandleFunc("/route/utilities", routeUtilitiesHandler)
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
