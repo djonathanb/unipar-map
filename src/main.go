@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 
 	"github.com/djonathanb/unipar-map/src/unipar"
@@ -60,8 +61,13 @@ func routeUtilitiesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
 	http.HandleFunc("/environments", environmentsHandler)
 	http.HandleFunc("/from/", routeHandler)
 	http.HandleFunc("/bathroom/", routeUtilitiesHandler)
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
