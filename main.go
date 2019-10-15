@@ -28,7 +28,7 @@ type RouteResponse struct {
 
 func routeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Print(r.URL.Query())
-	reg := regexp.MustCompile(`^/route/(?P<from>\w*)/(?P<to>\w*)/?`)
+	reg := regexp.MustCompile(`^/route/(?P<from>\w*)/to/(?P<to>\w*)/?`)
 	m := reg.FindStringSubmatch(r.URL.String())
 
 	from := m[1]
@@ -44,12 +44,24 @@ func routeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func routeUtilitiesHandler(w http.ResponseWriter, r *http.Request) {
+	log.Print(r.URL.Query())
+	reg := regexp.MustCompile(`^/bathroom/(?P<from>\w*)/?`)
+	m := reg.FindStringSubmatch(r.URL.String())
 
+	from := m[1]
+
+	fromEnv := unipar.Environments[from]
+
+	path, distance := unipar.MinimumPathToBathroom(fromEnv)
+	response := RouteResponse{Path: path, Distance: distance}
+
+	data, _ := json.Marshal(response)
+	w.Write([]byte(data))
 }
 
 func main() {
 	http.HandleFunc("/environments", environmentsHandler)
 	http.HandleFunc("/route/", routeHandler)
-	http.HandleFunc("/route/utilities", routeUtilitiesHandler)
+	http.HandleFunc("/bathroom/", routeUtilitiesHandler)
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }

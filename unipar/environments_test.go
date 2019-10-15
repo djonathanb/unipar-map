@@ -16,3 +16,17 @@ func TestMinimumPath(t *testing.T) {
 		t.Errorf("wrong path (%v)", path)
 	}
 }
+
+func TestMinimumPathToBathroom(t *testing.T) {
+	from := Environments["ENTRADA_SAIDA_FRENTE"]
+
+	path, distance := MinimumPathToBathroom(from)
+
+	if distance != 0 {
+		t.Errorf("wrong distance (%d)", distance)
+	}
+
+	if len(path) == 0 {
+		t.Errorf("wrong path (%v)", path)
+	}
+}

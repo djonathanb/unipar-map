@@ -2,15 +2,17 @@ package unipar
 
 import (
 	"log"
+	"math"
 
 	"github.com/djonathanb/unipar-map/ds"
 )
 
 // Environment struct
 type Environment struct {
-	Key   int     `json:"key"`
-	Name  string  `json:"name"`
-	Floor float32 `json:"floor"`
+	Key        int     `json:"key"`
+	Name       string  `json:"name"`
+	Floor      float32 `json:"floor"`
+	IsBathroom bool    `json:"-"`
 }
 
 // Environments map of environments
@@ -31,7 +33,7 @@ var Environments = map[string]Environment{
 	"CORREDOR_ESTETICA_NORTE":            Environment{Key: 12, Name: "Corredor Estética (Norte)", Floor: 0},
 	"RAMPA_ENTRADA_FRENTE":               Environment{Key: 13, Name: "Rampa - Entrada da Frente", Floor: 0},
 	"RAMPA_ENTRADA_FRENTE_PATAMAR":       Environment{Key: 14, Name: "Rampa - Entrada da Frente (Patamar)", Floor: 0.5},
-	"BANHEIRO_SECRETARIA":                Environment{Key: 15, Name: "Banheiro Secretaria", Floor: 0},
+	"BANHEIRO_SECRETARIA":                Environment{Key: 15, Name: "Banheiro Secretaria", Floor: 0, IsBathroom: true},
 	"ENTRADA_SAIDA_LATERAL":              Environment{Key: 16, Name: "Entrada/Saída Lateral", Floor: 0},
 	"PATIO_ALTO":                         Environment{Key: 17, Name: "Pátio (Alto)", Floor: 0},
 	"PATIO_BAIXO":                        Environment{Key: 18, Name: "Pátio (Baixo)", Floor: 0},
@@ -42,7 +44,7 @@ var Environments = map[string]Environment{
 	"EAD":                                Environment{Key: 22, Name: "EAD", Floor: -1},
 	"ENTRADA_SAIDA_BLOCO_PATIO":          Environment{Key: 23, Name: "Entrada/Saída Bloco/Pátio", Floor: -1}, // Sub
 	"CORREDOR_FISIO":                     Environment{Key: 24, Name: "Corredor Fisioterapia", Floor: -1},
-	"BANHEIRO_FISIO":                     Environment{Key: 25, Name: "Banheiro Fisioterapia", Floor: -1},
+	"BANHEIRO_FISIO":                     Environment{Key: 25, Name: "Banheiro Fisioterapia", Floor: -1, IsBathroom: true},
 	"ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO": Environment{Key: 26, Name: "Entrada/Saída Bloco/Estacionamento", Floor: -1},
 	"ESTACIONAMENTO":                     Environment{Key: 27, Name: "Estacionamento", Floor: -1},
 	"PORTAO_ESTACIONAMENTO":              Environment{Key: 28, Name: "Portão Estacionamento", Floor: -1},
@@ -60,15 +62,15 @@ var Environments = map[string]Environment{
 	"LABORATORIOS_SISTEMAS_LESTE":        Environment{Key: 40, Name: "Laboratórios de Sistemas (Leste)", Floor: 1},
 	"ATLETICA":                           Environment{Key: 41, Name: "Atlética (Lobão)", Floor: 1},
 	"RAMPA_LABORATORIOS":                 Environment{Key: 42, Name: "Rampa dos Laboratórios", Floor: 1},
-	"BANHEIRO_LABORATORIOS":              Environment{Key: 43, Name: "Banheiro dos Laboratórios", Floor: 1},
+	"BANHEIRO_LABORATORIOS":              Environment{Key: 43, Name: "Banheiro dos Laboratórios", Floor: 1, IsBathroom: true},
 	"LABORATORIOS_SISTEMAS_OESTE":        Environment{Key: 44, Name: "Laboratórios de Sistemas (Oeste)", Floor: 1},
 	"TECNICA":                            Environment{Key: 45, Name: "Técnica", Floor: 1},
 	"CORREDOR_DIREITO_SUL":               Environment{Key: 46, Name: "Corredor Direito (Sul)", Floor: 1},
 	"CORREDOR_DIREITO_NORTE":             Environment{Key: 47, Name: "Corredor Direito (Norte)", Floor: 1},
-	"BANHEIRO_DIREITO":                   Environment{Key: 47, Name: "Banheiro Direito", Floor: 1},
+	"BANHEIRO_DIREITO":                   Environment{Key: 47, Name: "Banheiro Direito", Floor: 1, IsBathroom: true},
 	"ESCADA_DIREITO":                     Environment{Key: 48, Name: "Escada Direito", Floor: 1},
 	"CEUP":                               Environment{Key: 49, Name: "CEUP", Floor: 1},
-	"BANHEIRO_CEUP":                      Environment{Key: 50, Name: "Banheiro CEUP", Floor: 1},
+	"BANHEIRO_CEUP":                      Environment{Key: 50, Name: "Banheiro CEUP", Floor: 1, IsBathroom: true},
 }
 
 func getEnvironmentByKey(key int) *Environment {
@@ -222,4 +224,25 @@ func MinimumPath(from Environment, to Environment) ([]Environment, int) {
 	}
 
 	return envPath, distance
+}
+
+// MinimumPathToBathroom returns the path and distance between two environments
+func MinimumPathToBathroom(from Environment) ([]Environment, int) {
+	path, distance := environmentsGraph.MinimumPath(from.Key)
+
+	var nearestBathroom *Environment
+	var nearestDistance int = math.MaxInt32
+	for i, key := range path {
+		if key > -1 {
+			env := getEnvironmentByKey(key)
+			if env.IsBathroom {
+				if distance[i] < nearestDistance {
+					nearestBathroom = env
+					nearestDistance = distance[i]
+				}
+			}
+		}
+	}
+
+	return MinimumPath(from, *nearestBathroom)
 }
