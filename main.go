@@ -22,13 +22,13 @@ func environmentsHandler(w http.ResponseWriter, r *http.Request) {
 // RouteResponse response for route calling
 type RouteResponse struct {
 	// Path     []unipar.Environment `json:"path"`
-	Path     []unipar.Environment `json:"path"`
-	Distance int                  `json:"distance"`
+	Path     []unipar.EnvironmentStep `json:"path"`
+	Distance int                      `json:"distance"`
 }
 
 func routeHandler(w http.ResponseWriter, r *http.Request) {
 	log.Print(r.URL.Query())
-	reg := regexp.MustCompile(`^/route/(?P<from>\w*)/to/(?P<to>\w*)/?`)
+	reg := regexp.MustCompile(`^/from/(?P<from>\w*)/to/(?P<to>\w*)/?`)
 	m := reg.FindStringSubmatch(r.URL.String())
 
 	from := m[1]
@@ -61,7 +61,7 @@ func routeUtilitiesHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/environments", environmentsHandler)
-	http.HandleFunc("/route/", routeHandler)
+	http.HandleFunc("/from/", routeHandler)
 	http.HandleFunc("/bathroom/", routeUtilitiesHandler)
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }

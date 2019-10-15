@@ -195,6 +195,15 @@ func initEdges() []EnvironmentEdge {
 // Edges list of edges between environments
 var environmentEdges = initEdges()
 
+func getEdgeByKeys(from int, to int) *EnvironmentEdge {
+	for _, edge := range environmentEdges {
+		if edge.from.Key == from && edge.to.Key == to {
+			return &edge
+		}
+	}
+	return nil
+}
+
 func buildEnvironmentsGraph() ds.Graph {
 	vertices := make([]ds.Vertex, len(Environments))
 	for _, env := range Environments {
@@ -214,20 +223,35 @@ func buildEnvironmentsGraph() ds.Graph {
 
 var environmentsGraph = buildEnvironmentsGraph()
 
+// EnvironmentStep step on path to determined environment
+type EnvironmentStep struct {
+	Env       Environment `json:"env"`
+	Direction string      `json:"direction"`
+}
+
 // MinimumPath returns the path and distance between two environments
-func MinimumPath(from Environment, to Environment) ([]Environment, int) {
+func MinimumPath(from Environment, to Environment) ([]EnvironmentStep, int) {
 	path, distance := environmentsGraph.MinimumPathTo(from.Key, to.Key)
 
-	envPath := make([]Environment, len(path))
+	envPath := make([]EnvironmentStep, len(path))
 	for i, key := range path {
-		envPath[i] = *getEnvironmentByKey(key)
+		env := *getEnvironmentByKey(key)
+
+		direction := ""
+		if i > 0 {
+			edge := getEdgeByKeys(path[i-1], key)
+			direction = edge.direction
+		}
+
+		step := EnvironmentStep{Env: env, Direction: direction}
+		envPath[i] = step
 	}
 
 	return envPath, distance
 }
 
 // MinimumPathToBathroom returns the path and distance between two environments
-func MinimumPathToBathroom(from Environment) ([]Environment, int) {
+func MinimumPathToBathroom(from Environment) ([]EnvironmentStep, int) {
 	path, distance := environmentsGraph.MinimumPath(from.Key)
 
 	var nearestBathroom *Environment
