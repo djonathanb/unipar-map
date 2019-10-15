@@ -22,7 +22,6 @@ func environmentsHandler(w http.ResponseWriter, r *http.Request) {
 
 // RouteResponse response for route calling
 type RouteResponse struct {
-	// Path     []unipar.Environment `json:"path"`
 	Path     []unipar.EnvironmentStep `json:"path"`
 	Distance int                      `json:"distance"`
 }

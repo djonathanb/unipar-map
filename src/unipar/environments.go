@@ -214,7 +214,6 @@ func buildEnvironmentsGraph() ds.Graph {
 	edges := ds.NewListContainer(len(vertices))
 	for _, edge := range environmentEdges {
 		edges.InsertEdge(edge.from.Key, edge.to.Key, edge.distance)
-		edges.InsertEdge(edge.to.Key, edge.from.Key, edge.distance)
 	}
 
 	g := ds.NewGraph(vertices, edges)
