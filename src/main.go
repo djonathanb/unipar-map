@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"regexp"
 
-	"github.com/djonathanb/unipar-map/unipar"
+	"github.com/djonathanb/unipar-map/src/unipar"
 )
 
 func environmentsHandler(w http.ResponseWriter, r *http.Request) {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"math"
 
-	"github.com/djonathanb/unipar-map/ds"
+	"github.com/djonathanb/unipar-map/src/ds"
 )
 
 // Environment struct
