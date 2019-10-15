@@ -66,7 +66,7 @@ func main() {
 		port = "8000"
 	}
 
-	http.HandleFunc("/environments", environmentsHandler)
+	http.HandleFunc("/environments/", environmentsHandler)
 	http.HandleFunc("/from/", routeHandler)
 	http.HandleFunc("/bathroom/", routeUtilitiesHandler)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
