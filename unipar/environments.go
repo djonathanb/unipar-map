@@ -1,146 +1,225 @@
 package unipar
 
+import (
+	"log"
+
+	"github.com/djonathanb/unipar-map/ds"
+)
+
 // Environment struct
 type Environment struct {
-	key   int
-	name  string
-	floor float32
-}
-
-// Name getter for name property
-func (e Environment) Name() string {
-	return e.name
+	Key   int     `json:"key"`
+	Name  string  `json:"name"`
+	Floor float32 `json:"floor"`
 }
 
 // Environments map of environments
 var Environments = map[string]Environment{
-	"ENTRADA_SAIDA_FRENTE":               Environment{key: 0, name: "Entrada/Saída Frente", floor: 0}, // Térreo
-	"GUARDA":                             Environment{key: 1, name: "Guarda", floor: 0},
-	"SECRETARIA":                         Environment{key: 2, name: "Secretária", floor: 0},
-	"PROVE":                              Environment{key: 3, name: "PROVE", floor: 0},
-	"COORDENACAO":                        Environment{key: 4, name: "Coordenação", floor: 0},
-	"RH":                                 Environment{key: 5, name: "RH", floor: 0},
-	"ESCRITORIO_MODELO":                  Environment{key: 6, name: "Escritório Modelo", floor: 0},
-	"CAIXA_ELETRONICO":                   Environment{key: 7, name: "Caixa Eletrônico", floor: 0},
-	"ENTRADA_SAIDA_ANFITEATRO":           Environment{key: 8, name: "Entrada/Saída Anfiteatro", floor: 0},
-	"ALMOXARIFADO":                       Environment{key: 9, name: "Almoxarifado", floor: 0},
-	"CORREDOR_ESTETICA_SUL":              Environment{key: 10, name: "Corredor Estética (Sul)", floor: 0},
-	"ESCADA_ESTETICA":                    Environment{key: 11, name: "Escada Estética", floor: 0},
-	"CORREDOR_ESTETICA_NORTE":            Environment{key: 12, name: "Corredor Estética (Norte)", floor: 0},
-	"RAMPA_ENTRADA_FRENTE":               Environment{key: 13, name: "Rampa - Entrada da Frente", floor: 0},
-	"RAMPA_ENTRADA_FRENTE_PATAMAR":       Environment{key: 14, name: "Rampa - Entrada da Frente (Patamar)", floor: 0.5},
-	"BANHEIRO_SECRETARIA":                Environment{key: 15, name: "Banheiro Secretaria", floor: 0},
-	"ENTRADA_SAIDA_LATERAL":              Environment{key: 16, name: "Entrada/Saída Lateral", floor: 0},
-	"PATIO_ALTO":                         Environment{key: 17, name: "Pátio (Alto)", floor: 0},
-	"PATIO_BAIXO":                        Environment{key: 18, name: "Pátio (Baixo)", floor: 0},
-	"CORREDOR_ARQUITETURA":               Environment{key: 19, name: "Corredor Arquitetura", floor: 0},
-	"ESCADA_ARQUITETURA":                 Environment{key: 20, name: "Escada Arquitetura", floor: 0},
-	"CANTINA":                            Environment{key: 21, name: "Cantina", floor: -1},
-	"EAD":                                Environment{key: 22, name: "EAD", floor: -1},
-	"ENTRADA_SAIDA_BLOCO_PATIO":          Environment{key: 23, name: "Entrada/Saída Bloco/Pátio", floor: -1}, // Sub
-	"CORREDOR_FISIO":                     Environment{key: 24, name: "Corredor Fisioterapia", floor: -1},
-	"BANHEIRO_FISIO":                     Environment{key: 25, name: "Banheiro Fisioterapia", floor: -1},
-	"ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO": Environment{key: 26, name: "Entrada/Saída Bloco/Estacionamento", floor: -1},
-	"ESTACIONAMENTO":                     Environment{key: 27, name: "Estacionamento", floor: -1},
-	"PORTAO_ESTACIONAMENTO":              Environment{key: 28, name: "Portão Estacionamento", floor: -1},
-	"QUIOSQUE":                           Environment{key: 29, name: "Quiosque", floor: -1},
-	"LAGO":                               Environment{key: 30, name: "Lago", floor: -1},
-	"SALA_PROFESSORES":                   Environment{key: 31, name: "Sala dos Professores", floor: -1},
-	"ANFITEATRO":                         Environment{key: 32, name: "Anfiteatro", floor: -1},
-	"PORTAO_ANFITEATRO":                  Environment{key: 33, name: "Portão Anfiteatro", floor: -1},
-	"ESCADA_BIBLIOTECA_RAMPA":            Environment{key: 34, name: "Escada da Biblioteca/Rampa", floor: 1}, // 1 Andar
-	"ESCADA_BIBLIOTECA_PATIO":            Environment{key: 35, name: "Escada da Biblioteca/Patio", floor: 1},
-	"BIBLIOTECA":                         Environment{key: 36, name: "Biblioteca", floor: 1},
-	"DIRETORIA":                          Environment{key: 37, name: "Diretoria", floor: 1},
-	"RAMPA_DIRETORIA":                    Environment{key: 38, name: "Rampa - Diretoria", floor: 1},
-	"FIES":                               Environment{key: 39, name: "FIES", floor: 1},
-	"LABORATORIOS_SISTEMAS_LESTE":        Environment{key: 40, name: "Laboratórios de Sistemas (Leste)", floor: 1},
-	"ATLETICA":                           Environment{key: 41, name: "Atlética (Lobão)", floor: 1},
-	"RAMPA_LABORATORIOS":                 Environment{key: 42, name: "Rampa dos Laboratórios", floor: 1},
-	"BANHEIRO_LABORATORIOS":              Environment{key: 43, name: "Banheiro dos Laboratórios", floor: 1},
-	"LABORATORIOS_SISTEMAS_OESTE":        Environment{key: 44, name: "Laboratórios de Sistemas (Oeste)", floor: 1},
-	"TECNICA":                            Environment{key: 45, name: "Técnica", floor: 1},
-	"CORREDOR_DIREITO_SUL":               Environment{key: 46, name: "Corredor Direito (Sul)", floor: 1},
-	"BANHEIRO_DIREITO_NORTE":             Environment{key: 47, name: "Banheiro Direito (Norte)", floor: 1},
-	"ESCADA_DIREITO":                     Environment{key: 48, name: "Escada Direito", floor: 1},
-	"CORREDOR_DIREITO_2":                 Environment{key: 49, name: "Corredor Direito 2", floor: 1},
-	"CEUP":                               Environment{key: 50, name: "CEUP", floor: 1},
-	"BANHEIRO_CEUP":                      Environment{key: 51, name: "Banheiro CEUP", floor: 1},
+	"ENTRADA_SAIDA_FRENTE":               Environment{Key: 0, Name: "Entrada/Saída Frente", Floor: 0}, // Térreo
+	"GUARDA":                             Environment{Key: 1, Name: "Guarda", Floor: 0},
+	"SECRETARIA":                         Environment{Key: 2, Name: "Secretária", Floor: 0},
+	"PROVE":                              Environment{Key: 3, Name: "PROVE", Floor: 0},
+	"COORDENACAO":                        Environment{Key: 4, Name: "Coordenação", Floor: 0},
+	"MECANOGRAFIA":                       Environment{Key: 4, Name: "Mecanografia", Floor: 0},
+	"RH":                                 Environment{Key: 5, Name: "RH", Floor: 0},
+	"ESCRITORIO_MODELO":                  Environment{Key: 6, Name: "Escritório Modelo", Floor: 0},
+	"CAIXA_ELETRONICO":                   Environment{Key: 7, Name: "Caixa Eletrônico", Floor: 0},
+	"ENTRADA_SAIDA_ANFITEATRO":           Environment{Key: 8, Name: "Entrada/Saída Anfiteatro", Floor: 0},
+	"ALMOXARIFADO":                       Environment{Key: 9, Name: "Almoxarifado", Floor: 0},
+	"CORREDOR_ESTETICA_SUL":              Environment{Key: 10, Name: "Corredor Estética (Sul)", Floor: 0},
+	"ESCADA_ESTETICA":                    Environment{Key: 11, Name: "Escada Estética", Floor: 0},
+	"CORREDOR_ESTETICA_NORTE":            Environment{Key: 12, Name: "Corredor Estética (Norte)", Floor: 0},
+	"RAMPA_ENTRADA_FRENTE":               Environment{Key: 13, Name: "Rampa - Entrada da Frente", Floor: 0},
+	"RAMPA_ENTRADA_FRENTE_PATAMAR":       Environment{Key: 14, Name: "Rampa - Entrada da Frente (Patamar)", Floor: 0.5},
+	"BANHEIRO_SECRETARIA":                Environment{Key: 15, Name: "Banheiro Secretaria", Floor: 0},
+	"ENTRADA_SAIDA_LATERAL":              Environment{Key: 16, Name: "Entrada/Saída Lateral", Floor: 0},
+	"PATIO_ALTO":                         Environment{Key: 17, Name: "Pátio (Alto)", Floor: 0},
+	"PATIO_BAIXO":                        Environment{Key: 18, Name: "Pátio (Baixo)", Floor: 0},
+	"ENTRADA_SAIDA_BLOCO_ARQUITETURA":    Environment{Key: 19, Name: "Entrada/Saída Bloco (Arquitetura)", Floor: 0},
+	"CORREDOR_ARQUITETURA":               Environment{Key: 19, Name: "Corredor Arquitetura", Floor: 0},
+	"ESCADA_ARQUITETURA":                 Environment{Key: 20, Name: "Escada Arquitetura", Floor: 0},
+	"CANTINA":                            Environment{Key: 21, Name: "Cantina", Floor: -1},
+	"EAD":                                Environment{Key: 22, Name: "EAD", Floor: -1},
+	"ENTRADA_SAIDA_BLOCO_PATIO":          Environment{Key: 23, Name: "Entrada/Saída Bloco/Pátio", Floor: -1}, // Sub
+	"CORREDOR_FISIO":                     Environment{Key: 24, Name: "Corredor Fisioterapia", Floor: -1},
+	"BANHEIRO_FISIO":                     Environment{Key: 25, Name: "Banheiro Fisioterapia", Floor: -1},
+	"ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO": Environment{Key: 26, Name: "Entrada/Saída Bloco/Estacionamento", Floor: -1},
+	"ESTACIONAMENTO":                     Environment{Key: 27, Name: "Estacionamento", Floor: -1},
+	"PORTAO_ESTACIONAMENTO":              Environment{Key: 28, Name: "Portão Estacionamento", Floor: -1},
+	"QUIOSQUE":                           Environment{Key: 29, Name: "Quiosque", Floor: -1},
+	"LAGO":                               Environment{Key: 30, Name: "Lago", Floor: -1},
+	"SALA_PROFESSORES":                   Environment{Key: 31, Name: "Sala dos Professores", Floor: -1},
+	"ANFITEATRO":                         Environment{Key: 32, Name: "Anfiteatro", Floor: -1},
+	"PORTAO_ANFITEATRO":                  Environment{Key: 33, Name: "Portão Anfiteatro", Floor: -1},
+	"ESCADA_BIBLIOTECA_RAMPA":            Environment{Key: 34, Name: "Escada da Biblioteca/Rampa", Floor: 1}, // 1 Andar
+	"ESCADA_BIBLIOTECA_PATIO":            Environment{Key: 35, Name: "Escada da Biblioteca/Patio", Floor: 1},
+	"BIBLIOTECA":                         Environment{Key: 36, Name: "Biblioteca", Floor: 1},
+	"DIRETORIA":                          Environment{Key: 37, Name: "Diretoria", Floor: 1},
+	"RAMPA_DIRETORIA":                    Environment{Key: 38, Name: "Rampa - Diretoria", Floor: 1},
+	"FIES":                               Environment{Key: 39, Name: "FIES", Floor: 1},
+	"LABORATORIOS_SISTEMAS_LESTE":        Environment{Key: 40, Name: "Laboratórios de Sistemas (Leste)", Floor: 1},
+	"ATLETICA":                           Environment{Key: 41, Name: "Atlética (Lobão)", Floor: 1},
+	"RAMPA_LABORATORIOS":                 Environment{Key: 42, Name: "Rampa dos Laboratórios", Floor: 1},
+	"BANHEIRO_LABORATORIOS":              Environment{Key: 43, Name: "Banheiro dos Laboratórios", Floor: 1},
+	"LABORATORIOS_SISTEMAS_OESTE":        Environment{Key: 44, Name: "Laboratórios de Sistemas (Oeste)", Floor: 1},
+	"TECNICA":                            Environment{Key: 45, Name: "Técnica", Floor: 1},
+	"CORREDOR_DIREITO_SUL":               Environment{Key: 46, Name: "Corredor Direito (Sul)", Floor: 1},
+	"CORREDOR_DIREITO_NORTE":             Environment{Key: 47, Name: "Corredor Direito (Norte)", Floor: 1},
+	"BANHEIRO_DIREITO":                   Environment{Key: 47, Name: "Banheiro Direito", Floor: 1},
+	"ESCADA_DIREITO":                     Environment{Key: 48, Name: "Escada Direito", Floor: 1},
+	"CEUP":                               Environment{Key: 49, Name: "CEUP", Floor: 1},
+	"BANHEIRO_CEUP":                      Environment{Key: 50, Name: "Banheiro CEUP", Floor: 1},
 }
 
-// Edge edge between two environments
-type Edge struct {
+func getEnvironmentByKey(key int) *Environment {
+	for _, env := range Environments {
+		if env.Key == key {
+			return &env
+		}
+	}
+	return nil
+}
+
+// EnvironmentEdge edge between two environments
+type EnvironmentEdge struct {
 	from      Environment
 	to        Environment
 	direction string
 	distance  int
 }
 
+func createEdge(slice []EnvironmentEdge, from string, to string, direction string,
+	reversedDirection string, distance int) []EnvironmentEdge {
+
+	fromEnv := Environments[from]
+	if fromEnv.Name == "" {
+		log.Printf("%s is not a valid environment", from)
+	}
+
+	toEnv := Environments[to]
+	if toEnv.Name == "" {
+		log.Printf("%s is not a valid environment", to)
+	}
+
+	slice = append(slice, EnvironmentEdge{
+		from:      fromEnv,
+		to:        toEnv,
+		direction: direction,
+		distance:  distance},
+	)
+
+	slice = append(slice, EnvironmentEdge{
+		from:      toEnv,
+		to:        fromEnv,
+		direction: reversedDirection,
+		distance:  distance},
+	)
+
+	return slice
+}
+
+func initEdges() []EnvironmentEdge {
+	var edges = []EnvironmentEdge{}
+
+	edges = createEdge(edges, "ENTRADA_SAIDA_FRENTE", "SECRETARIA", "N", "S", 5)
+	edges = createEdge(edges, "SECRETARIA", "BANHEIRO_SECRETARIA", "N", "S", 15)
+	edges = createEdge(edges, "SECRETARIA", "PROVE", "W", "E", 5)
+	edges = createEdge(edges, "PROVE", "RAMPA_ENTRADA_FRENTE", "N", "S", 5)
+	edges = createEdge(edges, "PROVE", "GUARDA", "W", "E", 5)
+	edges = createEdge(edges, "GUARDA", "COORDENACAO", "W", "E", 2)
+	edges = createEdge(edges, "COORDENACAO", "MECANOGRAFIA", "W", "E", 5)
+	edges = createEdge(edges, "COORDENACAO", "RH", "W", "E", 24)
+	edges = createEdge(edges, "RH", "ESCRITORIO_MODELO", "W", "E", 5)
+	edges = createEdge(edges, "ESCRITORIO_MODELO", "CAIXA_ELETRONICO", "W", "E", 4)
+	edges = createEdge(edges, "CAIXA_ELETRONICO", "ENTRADA_SAIDA_ANFITEATRO", "W", "E", 10)
+	edges = createEdge(edges, "CAIXA_ELETRONICO", "ALMOXARIFADO", "N", "S", 5)
+	edges = createEdge(edges, "ALMOXARIFADO", "CORREDOR_ESTETICA_SUL", "N", "S", 15)
+	edges = createEdge(edges, "CORREDOR_ESTETICA_SUL", "ESCADA_ESTETICA", "N", "S", 15)
+	edges = createEdge(edges, "ESCADA_ESTETICA", "CORREDOR_ESTETICA_NORTE", "N", "S", 15)
+	edges = createEdge(edges, "ESCADA_ESTETICA", "ENTRADA_SAIDA_BLOCO_PATIO", "N", "S", 5)
+	edges = createEdge(edges, "MECANOGRAFIA", "PATIO_ALTO", "N", "S", 20)
+	edges = createEdge(edges, "RAMPA_ENTRADA_FRENTE", "RAMPA_ENTRADA_FRENTE_PATAMAR", "N", "S", 7)    // 0 to 1
+	edges = createEdge(edges, "RAMPA_ENTRADA_FRENTE_PATAMAR", "DIRETORIA", "S", "N", 7)               // 0 to 1
+	edges = createEdge(edges, "RAMPA_ENTRADA_FRENTE_PATAMAR", "ESCADA_BIBLIOTECA_RAMPA", "N", "S", 1) // 0 to 1/
+	edges = createEdge(edges, "ESCADA_BIBLIOTECA_RAMPA", "BIBLIOTECA", "N", "S", 3)                   // 0 to 1
+	edges = createEdge(edges, "ENTRADA_SAIDA_LATERAL", "BANHEIRO_SECRETARIA", "S", "N", 5)
+	edges = createEdge(edges, "ENTRADA_SAIDA_LATERAL", "CORREDOR_ARQUITETURA", "N", "S", 15)
+	edges = createEdge(edges, "BANHEIRO_SECRETARIA", "CORREDOR_ARQUITETURA", "N", "S", 15)
+	edges = createEdge(edges, "PATIO_ALTO", "ENTRADA_SAIDA_BLOCO_ARQUITETURA", "E", "W", 10)
+	edges = createEdge(edges, "PATIO_ALTO", "ESCADA_BIBLIOTECA_PATIO", "E", "W", 10)
+	edges = createEdge(edges, "PATIO_ALTO", "PATIO_BAIXO", "N", "S", 15)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_ARQUITETURA", "CORREDOR_ARQUITETURA", "E", "W", 10)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_ARQUITETURA", "BANHEIRO_SECRETARIA", "E", "W", 10)
+	edges = createEdge(edges, "CORREDOR_ARQUITETURA", "ESCADA_ARQUITETURA", "N", "S", 15)
+	edges = createEdge(edges, "ESCADA_ARQUITETURA", "CANTINA", "N", "S", 8)
+	edges = createEdge(edges, "CANTINA", "EAD", "N", "S", 8)
+	edges = createEdge(edges, "CANTINA", "PATIO_BAIXO", "W", "E", 8)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_PATIO", "PATIO_BAIXO", "E", "W", 20)    // 0 to -1
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_PATIO", "ESCADA_ESTETICA", "W", "E", 5) // 0 to -1
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_PATIO", "CORREDOR_FISIO", "N", "S", 15)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_PATIO", "BANHEIRO_FISIO", "W", "E", 15)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO", "BANHEIRO_FISIO", "E", "W", 5)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO", "BANHEIRO_FISIO", "E", "W", 5)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO", "ESTACIONAMENTO", "N", "S", 25)
+	edges = createEdge(edges, "ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO", "SALA_PROFESSORES", "W", "E", 7)
+	edges = createEdge(edges, "ESTACIONAMENTO", "SALA_PROFESSORES", "S", "N", 20)
+	edges = createEdge(edges, "ESTACIONAMENTO", "LAGO", "SW", "NE", 25)
+	edges = createEdge(edges, "ESTACIONAMENTO", "QUIOSQUE", "W", "E", 25)
+	edges = createEdge(edges, "ESTACIONAMENTO", "PORTAO_ESTACIONAMENTO", "N", "S", 15)
+	edges = createEdge(edges, "QUIOSQUE", "LAGO", "N", "S", 5)
+	edges = createEdge(edges, "ANFITEATRO", "SALA_PROFESSORES", "N", "S", 40)
+	edges = createEdge(edges, "ANFITEATRO", "PORTAO_ANFITEATRO", "S", "N", 10)
+	edges = createEdge(edges, "PORTAO_ANFITEATRO", "ENTRADA_SAIDA_ANFITEATRO", "E", "W", 10)
+	edges = createEdge(edges, "DIRETORIA", "FIES", "E", "W", 10)
+	edges = createEdge(edges, "DIRETORIA", "LABORATORIOS_SISTEMAS_LESTE", "W", "E", 20)
+	edges = createEdge(edges, "FIES", "BIBLIOTECA", "N", "S", 30)
+	edges = createEdge(edges, "BIBLIOTECA", "ESCADA_BIBLIOTECA_PATIO", "W", "E", 10)
+	edges = createEdge(edges, "LABORATORIOS_SISTEMAS_LESTE", "ATLETICA", "W", "E", 20)
+	edges = createEdge(edges, "ATLETICA", "CORREDOR_DIREITO_SUL", "N", "S", 20)
+	edges = createEdge(edges, "ATLETICA", "BANHEIRO_LABORATORIOS", "W", "E", 25)
+	edges = createEdge(edges, "CORREDOR_DIREITO_SUL", "BANHEIRO_DIREITO", "N", "S", 5)
+	edges = createEdge(edges, "BANHEIRO_DIREITO", "ESCADA_DIREITO", "N", "S", 10)
+	edges = createEdge(edges, "ESCADA_DIREITO", "CORREDOR_DIREITO_NORTE", "N", "S", 20)
+	edges = createEdge(edges, "CORREDOR_DIREITO_NORTE", "CEUP", "N", "S", 20)
+	edges = createEdge(edges, "CEUP", "BANHEIRO_CEUP", "E", "W", 5)
+	edges = createEdge(edges, "BANHEIRO_LABORATORIOS", "LABORATORIOS_SISTEMAS_OESTE", "W", "E", 5)
+	edges = createEdge(edges, "LABORATORIOS_SISTEMAS_OESTE", "TECNICA", "W", "E", 10)
+	edges = createEdge(edges, "TECNICA", "TECNICA", "W", "E", 10)
+	edges = createEdge(edges, "ESCADA_DIREITO", "ESCADA_ESTETICA", "W", "E", 7) // 1 to 0
+
+	return edges
+}
+
 // Edges list of edges between environments
-var Edges = []Edge{
-	Edge{from: Environments["ENTRADA_SAIDA_FRENTE"], to: Environments["SECRETARIA"], direction: "N", distance: 5},
-	Edge{from: Environments["SECRETARIA"], to: Environments["BANHEIRO_SECRETARIA"], direction: "N", distance: 15},
-	Edge{from: Environments["SECRETARIA"], to: Environments["PROVE"], direction: "W", distance: 5},
-	Edge{from: Environments["PROVE"], to: Environments["RAMPA_ENTRADA_FRENTE"], direction: "N", distance: 5},
-	Edge{from: Environments["PROVE"], to: Environments["GUARDA"], direction: "W", distance: 5},
-	Edge{from: Environments["GUARDA"], to: Environments["COORDENACAO"], direction: "W", distance: 2},
-	Edge{from: Environments["COORDENACAO"], to: Environments["MECANOGRAFIA"], direction: "W", distance: 5},
-	Edge{from: Environments["COORDENACAO"], to: Environments["RH"], direction: "W", distance: 24},
-	Edge{from: Environments["RH"], to: Environments["ESCRITORO_MODELO"], direction: "W", distance: 5},
-	Edge{from: Environments["ESCRITORIO_MODELO"], to: Environments["CAIXA_ELETRONICO"], direction: "W", distance: 4},
-	Edge{from: Environments["CAIXA_ELETRONICO"], to: Environments["ENTRADA_SAIDA_ANFITEATRO"], direction: "W", distance: 10},
-	Edge{from: Environments["CAIXA_ELETRONICO"], to: Environments["ALMOXARIFADO"], direction: "N", distance: 5},
-	Edge{from: Environments["ALMOXARIFADO"], to: Environments["CORREDOR_ESTETICA_SUL"], direction: "N", distance: 15},
-	Edge{from: Environments["CORREDOR_ESTETICA_SUL"], to: Environments["ESCADA_ESTETICA"], direction: "N", distance: 15},
-	Edge{from: Environments["ESCADA_ESTETICA"], to: Environments["CORREDOR_ESTETICA_NORTE"], direction: "N", distance: 15},
-	Edge{from: Environments["ESCADA_ESTETICA"], to: Environments["ENTRADA_SAIDA_BLOCO_PATIO"], direction: "N", distance: 5},
-	Edge{from: Environments["MECANOGRAFIA"], to: Environments["PATIO_ALTO"], direction: "N", distance: 20},
-	Edge{from: Environments["RAMPA_ENTRADA_FRENTE"], to: Environments["RAMPA_ENTRADA_FRENTE_PATAMAR"], direction: "N", distance: 7},    // 0 to 1
-	Edge{from: Environments["RAMPA_ENTRADA_FRENTE_PATAMAR"], to: Environments["DIRETORIA"], direction: "S", distance: 7},               // 0 to 1
-	Edge{from: Environments["RAMPA_ENTRADA_FRENTE_PATAMAR"], to: Environments["ESCADA_BIBLIOTECA_RAMPA"], direction: "N", distance: 1}, // 0 to 1/
-	Edge{from: Environments["ESCADA_BIBLIOTECA_RAMPA"], to: Environments["BIBLIOTECA"], direction: "N", distance: 3},                   // 0 to 1
-	Edge{from: Environments["ENTRADA_SAIDA_LATERAL"], to: Environments["BANHEIRO_SECRETARIA"], direction: "S", distance: 5},
-	Edge{from: Environments["ENTRADA_SAIDA_LATERAL"], to: Environments["CORREDOR_ARQUITETURA"], direction: "N", distance: 15},
-	Edge{from: Environments["BANHEIRO_SECRETARIA"], to: Environments["CORREDOR_ARQUITETURA"], direction: "N", distance: 15},
-	Edge{from: Environments["PATIO_ALTO"], to: Environments["ENTRADA_SAIDA_BLOCO_ARQUITETURA"], direction: "E", distance: 10},
-	Edge{from: Environments["PATIO_ALTO"], to: Environments["ESCADA_BIBLIOTECA_PATIO"], direction: "E", distance: 10},
-	Edge{from: Environments["PATIO_ALTO"], to: Environments["PATIO_BAIXO"], direction: "N", distance: 15},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_ARQUITETURA"], to: Environments["CORREDOR_ARQUITETURA"], direction: "E", distance: 10},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_ARQUITETURA"], to: Environments["BANHEIRO_SECRETARIA"], direction: "E", distance: 10},
-	Edge{from: Environments["CORREDOR_ARQUITETURA"], to: Environments["ESCADA_ARQUITETURA"], direction: "N", distance: 15},
-	Edge{from: Environments["ESCADA_ARQUITETURA"], to: Environments["CANTINA"], direction: "N", distance: 8},
-	Edge{from: Environments["CANTINA"], to: Environments["EAD"], direction: "N", distance: 8},
-	Edge{from: Environments["CANTINA"], to: Environments["PATIO_BAIXO"], direction: "W", distance: 8},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_PATIO"], to: Environments["PATIO_BAIXO"], direction: "E", distance: 20},    // 0 to -1
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_PATIO"], to: Environments["ESCADA_ESTETICA"], direction: "W", distance: 5}, // 0 to -1
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_PATIO"], to: Environments["CORREDOR_FISIO"], direction: "N", distance: 15},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_PATIO"], to: Environments["BANHEIRO_FISIO"], direction: "W", distance: 15},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO"], to: Environments["BANHEIRO_FISIO"], direction: "E", distance: 5},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO"], to: Environments["BANHEIRO_FISIO"], direction: "E", distance: 5},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO"], to: Environments["ESTACIONAMENTO"], direction: "N", distance: 25},
-	Edge{from: Environments["ENTRADA_SAIDA_BLOCO_ESTACIONAMENTO"], to: Environments["SALA_PROFESSORES"], direction: "W", distance: 7},
-	Edge{from: Environments["ESTACIONAMENTO"], to: Environments["SALA_PROFESSORES"], direction: "S", distance: 20},
-	Edge{from: Environments["ESTACIONAMENTO"], to: Environments["LAGO"], direction: "SW", distance: 25},
-	Edge{from: Environments["ESTACIONAMENTO"], to: Environments["QUIOESQUE"], direction: "W", distance: 25},
-	Edge{from: Environments["ESTACIONAMENTO"], to: Environments["PORTAO_ESTACIONAMENTO"], direction: "N", distance: 15},
-	Edge{from: Environments["QUIOESQUE"], to: Environments["LAGO"], direction: "N", distance: 5},
-	Edge{from: Environments["ANFITEATRO"], to: Environments["SALA_PROFESSORES"], direction: "N", distance: 40},
-	Edge{from: Environments["ANFITEATRO"], to: Environments["PORTAO_ANFITEATRO"], direction: "S", distance: 10},
-	Edge{from: Environments["PORTAO_ANFITEATRO"], to: Environments["ENTRADA_SAIDA_ANFITEATRO"], direction: "E", distance: 10},
-	Edge{from: Environments["DIRETORIA"], to: Environments["FIES"], direction: "E", distance: 10},
-	Edge{from: Environments["DIRETORIA"], to: Environments["LABORATORIOS_SISTEMAS_LESTE"], direction: "W", distance: 20},
-	Edge{from: Environments["FIES"], to: Environments["BIBLIOTECA"], direction: "N", distance: 30},
-	Edge{from: Environments["BIBLIOTECA"], to: Environments["ESCADA_BIBLIOTECA_PATIO"], direction: "W", distance: 10},
-	Edge{from: Environments["LABORATORIOS_SISTEMAS_LESTE"], to: Environments["ATLETICA"], direction: "W", distance: 20},
-	Edge{from: Environments["ATLETICA"], to: Environments["CORREDOR_DIREITO_SUL"], direction: "N", distance: 20},
-	Edge{from: Environments["ATLETICA"], to: Environments["BANHEIRO_LABORATORIOS"], direction: "W", distance: 25},
-	Edge{from: Environments["CORREDOR_DIREITO_SUL"], to: Environments["BANHEIRO_DIREITO"], direction: "N", distance: 5},
-	Edge{from: Environments["BANHEIRO_DIREITO"], to: Environments["ESCADA_DIREITO"], direction: "N", distance: 10},
-	Edge{from: Environments["ESCADA_DIREITO"], to: Environments["CORREDOR_DIREITO_NORTE"], direction: "N", distance: 20},
-	Edge{from: Environments["CORREDOR_DIREITO_NORTE"], to: Environments["CEUP"], direction: "N", distance: 20},
-	Edge{from: Environments["CEUP"], to: Environments["BANHEIRO_CEUP"], direction: "E", distance: 5},
-	Edge{from: Environments["BANHEIRO_LABORATORIOS"], to: Environments["LABORATORIOS_SISTEMAS_OESTE"], direction: "W", distance: 5},
-	Edge{from: Environments["LABORATORIOS_SISTEMAS_OESTE"], to: Environments["TECNICA"], direction: "W", distance: 10},
-	Edge{from: Environments["TECNICA"], to: Environments["TECNICA"], direction: "W", distance: 10},
-	Edge{from: Environments["ESCADA_DIREITO"], to: Environments["ESCADA_ESTETICA"], direction: "W", distance: 7}, // 1 to 0
+var environmentEdges = initEdges()
+
+func buildEnvironmentsGraph() ds.Graph {
+	vertices := make([]ds.Vertex, len(Environments))
+	for _, env := range Environments {
+		v := ds.NewVertex(env.Key, env)
+		vertices[env.Key] = v
+	}
+
+	edges := ds.NewListContainer(len(vertices))
+	for _, edge := range environmentEdges {
+		edges.InsertEdge(edge.from.Key, edge.to.Key, edge.distance)
+		edges.InsertEdge(edge.to.Key, edge.from.Key, edge.distance)
+	}
+
+	g := ds.NewGraph(vertices, edges)
+	return g
+}
+
+var environmentsGraph = buildEnvironmentsGraph()
+
+// MinimumPath returns the path and distance between two environments
+func MinimumPath(from Environment, to Environment) ([]Environment, int) {
+	path, distance := environmentsGraph.MinimumPathTo(from.Key, to.Key)
+
+	envPath := make([]Environment, len(path))
+	for i, key := range path {
+		envPath[i] = *getEnvironmentByKey(key)
+	}
+
+	return envPath, distance
 }
